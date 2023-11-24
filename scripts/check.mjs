@@ -199,6 +199,7 @@ async function resolveWintun() {
   let d1 = await fs.readdir(path.join(cwd));
   let d2 = await fs.readdir(path.join(cwd, "wintun"));
   console.log("wintun dir", d1, d2);
+  await fs.mkdirp(path.dirname(targetPath));
   await fs.rename(wintunPath, targetPath);
 
   console.log(`[INFO]: resolve wintun.dll finished`);
