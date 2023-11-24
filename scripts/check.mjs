@@ -56,24 +56,6 @@ if (!META_MAP[`${platform}-${arch}`]) {
   throw new Error(`clash meta unsupported platform "${platform}-${arch}"`);
 }
 
-function clash() {
-  const name = CLASH_MAP[`${platform}-${arch}`];
-
-  const isWin = platform === "win32";
-  const urlExt = isWin ? "zip" : "gz";
-  const downloadURL = `${CLASH_URL_PREFIX}/${name}.${urlExt}`;
-  const exeFile = `${name}${isWin ? ".exe" : ""}`;
-  const zipFile = `${name}.${urlExt}`;
-
-  return {
-    name: "clash",
-    targetFile: `clash-${SIDECAR_HOST}${isWin ? ".exe" : ""}`,
-    exeFile,
-    zipFile,
-    downloadURL,
-  };
-}
-
 function clashS3() {
   const name = CLASH_MAP[`${platform}-${arch}`];
 
@@ -167,19 +149,6 @@ async function resolveSidecar(binInfo) {
   } finally {
     // delete temp dir
     await fs.remove(tempDir);
-  }
-}
-
-/**
- * prepare clash core
- * if the core version is not updated in time, use S3 storage as a backup.
- */
-async function resolveClash() {
-  try {
-    return await resolveSidecar(clash());
-  } catch {
-    console.log(`[WARN]: clash core needs to be updated`);
-    return await resolveSidecar(clashS3());
   }
 }
 

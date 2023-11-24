@@ -50,6 +50,15 @@
         }
       }
     },
+    "updater": {
+      "active": false,
+      "endpoints": [
+        "https://ghproxy.com/https://github.com/zzzgydi/clash-verge/releases/download/updater/update-proxy.json",
+        "https://github.com/zzzgydi/clash-verge/releases/download/updater/update.json"
+      ],
+      "dialog": true,
+      "pubkey": ""
+    },
     "allowlist": {
       "shell": {
         "all": true
