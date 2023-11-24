@@ -1,14 +1,3 @@
-<h1 align="center">
-  <img src="./src/assets/image/logo.png" alt="Clash" width="128" />
-  <br>
-  Clash Verge
-  <br>
-</h1>
-
-<h3 align="center">
-A <a href="https://github.com/Dreamacro/clash">Clash</a> GUI based on <a href="https://github.com/tauri-apps/tauri">tauri</a>.
-</h3>
-
 ## Features
 
 - Full `clash` config supported, Partial `clash premium` config supported.
@@ -83,40 +72,6 @@ apt install libwebkit2gtk-4.0-dev \
 ```shell
 yarn build
 ```
-
-## Todos
-
-> This keng is a little big...
-
-## Screenshots
-
-<div align="center">
-  <img src="./docs/demo1.png" alt="demo1" width="32%" />
-  <img src="./docs/demo2.png" alt="demo2" width="32%" />
-  <img src="./docs/demo3.png" alt="demo3" width="32%" />
-  <img src="./docs/demo4.png" alt="demo4" width="32%" />
-  <img src="./docs/demo5.png" alt="demo5" width="32%" />
-  <img src="./docs/demo6.png" alt="demo6" width="32%" />
-</div>
-
-### Custom Theme
-
-<div align="center">
-  <img src="./docs/color1.png" alt="demo1" width="16%" />
-  <img src="./docs/color2.png" alt="demo2" width="16%" />
-  <img src="./docs/color3.png" alt="demo3" width="16%" />
-  <img src="./docs/color4.png" alt="demo4" width="16%" />
-  <img src="./docs/color5.png" alt="demo5" width="16%" />
-  <img src="./docs/color6.png" alt="demo6" width="16%" />
-</div>
-
-## Disclaimer
-
-This is a learning project for Rust practice.
-
-## Contributions
-
-Issue and PR welcome!
 
 ## Acknowledgement
 

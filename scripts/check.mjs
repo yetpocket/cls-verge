@@ -10,19 +10,31 @@ const cwd = process.cwd();
 const TEMP_DIR = path.join(cwd, "node_modules/.verge");
 const FORCE = process.argv.includes("--force");
 
-const SIDECAR_HOST = execSync("rustc -vV")
-  .toString()
-  .match(/(?<=host: ).+(?=\s*)/g)[0];
-
 /* ======= clash meta ======= */
 const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download/Alpha`;
 
+// rustup target list
 const META_MAP = {
-  "win32-x64": "clash.meta-windows-amd64-compatible",
-  "darwin-x64": "clash.meta-darwin-amd64",
-  "darwin-arm64": "clash.meta-darwin-arm64",
-  "linux-x64": "clash.meta-linux-amd64-compatible",
-  "linux-arm64": "clash.meta-linux-arm64",
+  "win32-x64": {
+    name: "clash.meta-windows-amd64-compatible",
+    host: "x86_64-pc-windows-gnu",
+  },
+  "darwin-x64": {
+    name: "clash.meta-darwin-amd64",
+    host: "x86_64-apple-darwin",
+  },
+  "darwin-arm64": {
+    name: "clash.meta-darwin-arm64",
+    host: "aarch64-apple-darwin",
+  },
+  "linux-x64": {
+    name: "clash.meta-linux-amd64-compatible",
+    host: "x86_64-unknown-linux-gnu",
+  },
+  "linux-arm64": {
+    name: "clash.meta-linux-arm64",
+    host: "aarch64-unknown-linux-gnu",
+  },
 };
 const SERVICE_URL =
   "https://github.com/yetpocket/clash-verge-service/releases/download/latest";
@@ -39,16 +51,15 @@ if (!META_MAP[`${platform}-${arch}`]) {
 
 async function downloadAllClashMetaPlatformArch() {
   let futs = Object.keys(META_MAP).map(async (x) => {
-    let u = META_MAP[x];
-    let [platform, arch] = u.split("-");
-    let config = clashMeta(platform, arch);
+    let [platform, arch] = x.split("-");
+    let config = clashMeta(platform, arch, META_MAP[x].host);
     await resolveSidecar(config);
   });
   await Promise.all(futs);
 }
 
-function clashMeta(platform, arch) {
-  const name = META_MAP[`${platform}-${arch}`];
+function clashMeta(platform, arch, host) {
+  const name = META_MAP[`${platform}-${arch}`].name;
   const isWin = platform === "win32";
   const urlExt = isWin ? "zip" : "gz";
   const downloadURL = `${META_URL_PREFIX}/${name}.${urlExt}`;
@@ -57,7 +68,7 @@ function clashMeta(platform, arch) {
 
   return {
     name: "clash-meta",
-    targetFile: `clash-meta-${SIDECAR_HOST}${isWin ? ".exe" : ""}`,
+    targetFile: `clash-meta-${host}${isWin ? ".exe" : ""}`,
     exeFile,
     zipFile,
     downloadURL,
@@ -119,9 +130,6 @@ async function resolveSidecar(binInfo) {
     // 需要删除文件
     await fs.remove(sidecarPath);
     throw err;
-  } finally {
-    // delete temp dir
-    await fs.remove(tempDir);
   }
 }
 
