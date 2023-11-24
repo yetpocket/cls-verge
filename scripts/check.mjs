@@ -41,6 +41,10 @@ const META_MAP = {
   "linux-x64": "clash.meta-linux-amd64-compatible",
   "linux-arm64": "clash.meta-linux-arm64",
 };
+const SERVICE_URL =
+  "https://github.com/yetpocket/clash-verge-service/releases/download/latest";
+
+
 
 /**
  * check available
@@ -267,8 +271,6 @@ async function downloadFile(url, path) {
 /**
  * main
  */
-const SERVICE_URL =
-  "https://github.com/zzzgydi/clash-verge-service/releases/download/latest";
 
 const resolveService = () =>
   resolveResource({
@@ -330,5 +332,4 @@ async function runTask() {
   return runTask();
 }
 
-runTask();
 runTask();
