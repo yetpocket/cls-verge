@@ -15,11 +15,11 @@ const SIDECAR_HOST = execSync("rustc -vV")
   .match(/(?<=host: ).+(?=\s*)/g)[0];
 
 /* ======= clash ======= */
-const CLASH_STORAGE_PREFIX = "https://github.com/yetpocket/cls-meta/releases/download/Alpha/";
+const CLASH_STORAGE_PREFIX = "https://github.com/yetpocket/cls-meta/releases/download/Alpha";
 
 // clash.meta-android-arm64.gz
 const CLASH_URL_PREFIX =
-  "https://github.com/yetpocket/cls-meta/releases/download/Alpha/";
+  "https://github.com/yetpocket/cls-meta/releases/download/Alpha";
 
 const CLASH_MAP = {
   "win32-x64": "clash.meta-windows-amd64",
@@ -30,8 +30,7 @@ const CLASH_MAP = {
 };
 
 /* ======= clash meta ======= */
-const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download/Alpha/`;
-const META_VERSION = "v1.16.0";
+const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download/Alpha`;
 
 const META_MAP = {
   "win32-x64": "clash.meta-windows-amd64-compatible",
@@ -62,7 +61,7 @@ function clash() {
 
   const isWin = platform === "win32";
   const urlExt = isWin ? "zip" : "gz";
-  const downloadURL = `${CLASH_URL_PREFIX}${name}.${urlExt}`;
+  const downloadURL = `${CLASH_URL_PREFIX}/${name}.${urlExt}`;
   const exeFile = `${name}${isWin ? ".exe" : ""}`;
   const zipFile = `${name}.${urlExt}`;
 
@@ -80,7 +79,7 @@ function clashS3() {
 
   const isWin = platform === "win32";
   const urlExt = isWin ? "zip" : "gz";
-  const downloadURL = `${CLASH_STORAGE_PREFIX}${name}.${urlExt}`;
+  const downloadURL = `${CLASH_STORAGE_PREFIX}/${name}.${urlExt}`;
   const exeFile = `${name}${isWin ? ".exe" : ""}`;
   const zipFile = `${name}.${urlExt}`;
 
@@ -97,7 +96,7 @@ function clashMeta() {
   const name = META_MAP[`${platform}-${arch}`];
   const isWin = platform === "win32";
   const urlExt = isWin ? "zip" : "gz";
-  const downloadURL = `${META_URL_PREFIX}${META_VERSION}/${name}-${META_VERSION}.${urlExt}`;
+  const downloadURL = `${META_URL_PREFIX}/${name}.${urlExt}`;
   const exeFile = `${name}${isWin ? ".exe" : ""}`;
   const zipFile = `${name}-${META_VERSION}.${urlExt}`;
 
