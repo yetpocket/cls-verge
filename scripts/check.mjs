@@ -98,7 +98,7 @@ function clashMeta() {
   const urlExt = isWin ? "zip" : "gz";
   const downloadURL = `${META_URL_PREFIX}/${name}.${urlExt}`;
   const exeFile = `${name}${isWin ? ".exe" : ""}`;
-  const zipFile = `${name}-${META_VERSION}.${urlExt}`;
+  const zipFile = `${name}.${urlExt}`;
 
   return {
     name: "clash-meta",
