@@ -215,7 +215,9 @@ async function resolveWintun() {
   if (!(await fs.pathExists(wintunPath))) {
     throw new Error(`path not found "${wintunPath}"`);
   }
-
+  let d1 = await fs.readdir(path.join(tempDir));
+  let d2 = await fs.readdir(path.join(tempDir, "wintun"));
+  console.log("wintun dir", d1, d1);
   await fs.rename(wintunPath, targetPath);
   await fs.remove(tempDir);
 
