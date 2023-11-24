@@ -192,34 +192,14 @@ async function resolveWintun() {
 
   if (platform !== "win32") return;
 
-  const url = "https://www.wintun.net/builds/wintun-0.14.1.zip";
 
-  const tempDir = path.join(TEMP_DIR, "wintun");
-  const tempZip = path.join(tempDir, "wintun.zip");
-
-  const wintunPath = path.join(tempDir, "wintun/bin/amd64/wintun.dll");
+  const wintunPath = path.join(cwd, "wintun/bin/amd64/wintun.dll");
   const targetPath = path.join(cwd, "src-tauri/resources", "wintun.dll");
 
-  if (!FORCE && (await fs.pathExists(targetPath))) return;
-
-  await fs.mkdirp(tempDir);
-
-  if (!(await fs.pathExists(tempZip))) {
-    await downloadFile(url, tempZip);
-  }
-
-  // unzip
-  const zip = new AdmZip(tempZip);
-  zip.extractAllTo(tempDir, true);
-
-  if (!(await fs.pathExists(wintunPath))) {
-    throw new Error(`path not found "${wintunPath}"`);
-  }
-  let d1 = await fs.readdir(path.join(tempDir));
-  let d2 = await fs.readdir(path.join(tempDir, "wintun"));
-  console.log("wintun dir", d1, d1);
+  let d1 = await fs.readdir(path.join(cwd));
+  let d2 = await fs.readdir(path.join(cwd, "wintun"));
+  console.log("wintun dir", d1, d2);
   await fs.rename(wintunPath, targetPath);
-  await fs.remove(tempDir);
 
   console.log(`[INFO]: resolve wintun.dll finished`);
 }
