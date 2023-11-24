@@ -263,7 +263,7 @@ async function downloadFile(url, path) {
   const buffer = await response.arrayBuffer();
   await fs.writeFile(path, new Uint8Array(buffer));
 
-  console.log(`[INFO]: download finished "${url}"`);
+  console.log(`[INFO]: download finished "${url} at ${path}"`);
 }
 
 /**
