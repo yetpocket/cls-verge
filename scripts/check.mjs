@@ -15,12 +15,12 @@ const SIDECAR_HOST = execSync("rustc -vV")
   .match(/(?<=host: ).+(?=\s*)/g)[0];
 
 /* ======= clash ======= */
-const CLASH_STORAGE_PREFIX = "https://release.dreamacro.workers.dev/";
+const CLASH_STORAGE_PREFIX = "https://github.com/yetpocket/cls-meta/releases/download/Alpha/";
 
 // clash.meta-android-arm64.gz
 const CLASH_URL_PREFIX =
   "https://github.com/yetpocket/cls-meta/releases/download/Alpha/";
-const CLASH_LATEST_DATE = "latest";
+const CLASH_LATEST_DATE = "";
 
 const CLASH_MAP = {
   "win32-x64": "clash.meta-windows-amd64",
