@@ -16,20 +16,22 @@ const SIDECAR_HOST = execSync("rustc -vV")
 
 /* ======= clash ======= */
 const CLASH_STORAGE_PREFIX = "https://release.dreamacro.workers.dev/";
+
+// clash.meta-android-arm64.gz
 const CLASH_URL_PREFIX =
-  "https://github.com/Dreamacro/clash/releases/download/premium/";
+  "https://github.com/yetpocket/cls-meta/releases/download/Alpha/";
 const CLASH_LATEST_DATE = "latest";
 
 const CLASH_MAP = {
-  "win32-x64": "clash-windows-amd64",
-  "darwin-x64": "clash-darwin-amd64",
-  "darwin-arm64": "clash-darwin-arm64",
-  "linux-x64": "clash-linux-amd64",
-  "linux-arm64": "clash-linux-arm64",
+  "win32-x64": "clash.meta-windows-amd64",
+  "darwin-x64": "clash.meta-darwin-amd64",
+  "darwin-arm64": "clash.meta-darwin-arm64",
+  "linux-x64": "clash.meta-linux-amd64",
+  "linux-arm64": "clash.meta-linux-arm64",
 };
 
 /* ======= clash meta ======= */
-const META_URL_PREFIX = `https://github.com/MetaCubeX/Clash.Meta/releases/download/`;
+const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download/Alpha/`;
 const META_VERSION = "v1.16.0";
 
 const META_MAP = {
