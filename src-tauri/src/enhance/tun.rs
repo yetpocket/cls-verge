@@ -57,25 +57,25 @@ fn use_dns_for_tun(mut config: Mapping) -> Mapping {
     // 开启tun将同时开启dns
     revise!(dns_val, "enable", true);
 
-    append!(dns_val, "enhanced-mode", "fake-ip");
-    append!(dns_val, "fake-ip-range", "198.18.0.1/16");
-    append!(
-        dns_val,
-        "nameserver",
-        vec!["114.114.114.114", "223.5.5.5", "8.8.8.8"]
-    );
-    append!(dns_val, "fallback", vec![] as Vec<&str>);
+    // append!(dns_val, "enhanced-mode", "fake-ip");
+    // append!(dns_val, "fake-ip-range", "198.18.0.1/16");
+    // append!(
+    //     dns_val,
+    //     "nameserver",
+    //     vec!["114.114.114.114", "223.5.5.5", "8.8.8.8"]
+    // );
+    // append!(dns_val, "fallback", vec![] as Vec<&str>);
 
-    #[cfg(target_os = "windows")]
-    append!(
-        dns_val,
-        "fake-ip-filter",
-        vec![
-            "dns.msftncsi.com",
-            "www.msftncsi.com",
-            "www.msftconnecttest.com"
-        ]
-    );
+    // #[cfg(target_os = "windows")]
+    // append!(
+    //     dns_val,
+    //     "fake-ip-filter",
+    //     vec![
+    //         "dns.msftncsi.com",
+    //         "www.msftncsi.com",
+    //         "www.msftconnecttest.com"
+    //     ]
+    // );
     revise!(config, "dns", dns_val);
     config
 }
