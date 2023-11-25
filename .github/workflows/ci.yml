@@ -94,8 +94,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: ${{  success() }}
         with:
-          name: ${{ github.ref_name }}
-          tag_name: ${{ github.ref_name }}
+          tag_name: latest
           files: |
             output/*
           prerelease: true
