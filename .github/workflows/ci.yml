@@ -111,9 +111,9 @@ jobs:
             # mac m1
             src-tauri/target/aarch64-apple-darwin/bundle/macos/Clash Verge.aarch64.app.tar.gz
             src-tauri/target/aarch64-apple-darwin/bundle/macos/Clash Verge.aarch64.app.tar.gz.sig
-          prerelease: true
-          generate_release_notes: true
-          body_path: release.txt
+          prerelease: false
+          generate_release_notes: false
+          body: release
 
   release-update:
     needs: release
