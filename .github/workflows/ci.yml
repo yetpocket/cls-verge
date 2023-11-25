@@ -75,7 +75,17 @@ jobs:
           rustup target add aarch64-apple-darwin
           yarn build-m1
           ls src-tauri/target
+          echo -----
+          ls src-tauri/target/macos
+          echo -----
+          ls src-tauri/target/dmg
+          echo -----
           ls src-tauri/target/release/bundle
+          echo -----
+          ls src-tauri/aarch64-apple-darwin
+          echo -----
+          ls src-tauri/aarch64-apple-darwin/macos
+          ls src-tauri/aarch64-apple-darwin/dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
@@ -93,9 +103,9 @@ jobs:
             src-tauri/target/release/bundle/**/*.exe
             src-tauri/target/release/bundle/**/*.msi
 
-            src-tauri/target/release/bundle/**/Clash Verge.aarch64.app.tar.gz
-            src-tauri/target/aarch64-apple-darwin/bundle/**/Clash Verge.aarch64.app.tar.gz
-            src-tauri/target/aarch64-apple-darwin/bundle/**/Clash Verge.aarch64.app.tar.gz.sig
+            src-tauri/target/**/*.aarch64.app.tar.gz
+            src-tauri/target/**/*.app.tar.gz
+            src-tauri/target/**/*.app.tar.gz.sig
           prerelease: false
           generate_release_notes: false
           body: release
