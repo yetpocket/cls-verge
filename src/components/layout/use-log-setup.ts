@@ -28,7 +28,6 @@ export const useLogSetup = () => {
     if (!enableLog || !clashInfo) return;
 
     getClashLogs().then(setLogData);
-
     const { server = "", secret = "" } = clashInfo;
     connect(
       `ws://${server}/logs?token=${encodeURIComponent(
@@ -39,5 +38,5 @@ export const useLogSetup = () => {
     return () => {
       disconnect();
     };
-  }, [clashInfo, enableLog]);
+  }, [clashInfo, enableLog, clash]);
 };
