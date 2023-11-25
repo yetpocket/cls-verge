@@ -101,13 +101,12 @@ jobs:
         with:
           tag_name: release-${{ github.ref_name }}
           files: |
-            # linux amd64 
             src-tauri/target/release/bundle/appimage/*.AppImage
             src-tauri/target/release/bundle/appimage/*.deb
-            # windows amd64
+
             src-tauri/target/release/bundle/windows/*.exe
             src-tauri/target/release/bundle/windows/*.msi
-            # mac x86
+
             src-tauri/target/release/bundle/macos/Clash Verge.aarch64.app.tar.gz
             # mac m1
             src-tauri/target/aarch64-apple-darwin/bundle/macos/Clash Verge.aarch64.app.tar.gz
