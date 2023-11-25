@@ -36,8 +36,9 @@ const META_MAP = {
     host: "aarch64-unknown-linux-gnu",
   },
 };
+
 const SERVICE_URL =
-  "https://github.com/yetpocket/clash-verge-service/releases/download/latest";
+  "https://github.com/yetpocket/cls-verge-service/releases/download/latest";
 
 /**
  * check available
