@@ -10,72 +10,56 @@ const cwd = process.cwd();
 const TEMP_DIR = path.join(cwd, "node_modules/.verge");
 const FORCE = process.argv.includes("--force");
 
-const SIDECAR_HOST = execSync("rustc -vV")
-  .toString()
-  .match(/(?<=host: ).+(?=\s*)/g)[0];
-
-/* ======= clash ======= */
-const CLASH_STORAGE_PREFIX = "https://github.com/yetpocket/cls-meta/releases/download/Alpha";
-
-// clash.meta-android-arm64.gz
-const CLASH_URL_PREFIX =
-  "https://github.com/yetpocket/cls-meta/releases/download/Alpha";
-
-const CLASH_MAP = {
-  "win32-x64": "clash.meta-windows-amd64",
-  "darwin-x64": "clash.meta-darwin-amd64",
-  "darwin-arm64": "clash.meta-darwin-arm64",
-  "linux-x64": "clash.meta-linux-amd64",
-  "linux-arm64": "clash.meta-linux-arm64",
-};
-
 /* ======= clash meta ======= */
 const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download/Alpha`;
 
+// rustup target list
 const META_MAP = {
-  "win32-x64": "clash.meta-windows-amd64-compatible",
-  "darwin-x64": "clash.meta-darwin-amd64",
-  "darwin-arm64": "clash.meta-darwin-arm64",
-  "linux-x64": "clash.meta-linux-amd64-compatible",
-  "linux-arm64": "clash.meta-linux-arm64",
+  "win32-x64": {
+    name: "clash.meta-windows-amd64-compatible",
+    host: "x86_64-pc-windows-gnu",
+  },
+  "darwin-x64": {
+    name: "clash.meta-darwin-amd64",
+    host: "x86_64-apple-darwin",
+  },
+  "darwin-arm64": {
+    name: "clash.meta-darwin-arm64",
+    host: "aarch64-apple-darwin",
+  },
+  "linux-x64": {
+    name: "clash.meta-linux-amd64-compatible",
+    host: "x86_64-unknown-linux-gnu",
+  },
+  "linux-arm64": {
+    name: "clash.meta-linux-arm64",
+    host: "aarch64-unknown-linux-gnu",
+  },
 };
 const SERVICE_URL =
   "https://github.com/yetpocket/clash-verge-service/releases/download/latest";
-
-
 
 /**
  * check available
  */
 
 const { platform, arch } = process;
-if (!CLASH_MAP[`${platform}-${arch}`]) {
-  throw new Error(`clash unsupported platform "${platform}-${arch}"`);
-}
+
 if (!META_MAP[`${platform}-${arch}`]) {
   throw new Error(`clash meta unsupported platform "${platform}-${arch}"`);
 }
 
-function clashS3() {
-  const name = CLASH_MAP[`${platform}-${arch}`];
-
-  const isWin = platform === "win32";
-  const urlExt = isWin ? "zip" : "gz";
-  const downloadURL = `${CLASH_STORAGE_PREFIX}/${name}.${urlExt}`;
-  const exeFile = `${name}${isWin ? ".exe" : ""}`;
-  const zipFile = `${name}.${urlExt}`;
-
-  return {
-    name: "clash",
-    targetFile: `clash-${SIDECAR_HOST}${isWin ? ".exe" : ""}`,
-    exeFile,
-    zipFile,
-    downloadURL,
-  };
+async function downloadAllClashMetaPlatformArch() {
+  let futs = Object.keys(META_MAP).map(async (x) => {
+    let [platform, arch] = x.split("-");
+    let config = clashMeta(platform, arch, META_MAP[x].host);
+    await resolveSidecar(config);
+  });
+  await Promise.all(futs);
 }
 
-function clashMeta() {
-  const name = META_MAP[`${platform}-${arch}`];
+function clashMeta(platform, arch, host) {
+  const name = META_MAP[`${platform}-${arch}`].name;
   const isWin = platform === "win32";
   const urlExt = isWin ? "zip" : "gz";
   const downloadURL = `${META_URL_PREFIX}/${name}.${urlExt}`;
@@ -84,7 +68,7 @@ function clashMeta() {
 
   return {
     name: "clash-meta",
-    targetFile: `clash-meta-${SIDECAR_HOST}${isWin ? ".exe" : ""}`,
+    targetFile: `clash-meta-${host}${isWin ? ".exe" : ""}`,
     exeFile,
     zipFile,
     downloadURL,
@@ -146,9 +130,6 @@ async function resolveSidecar(binInfo) {
     // 需要删除文件
     await fs.remove(sidecarPath);
     throw err;
-  } finally {
-    // delete temp dir
-    await fs.remove(tempDir);
   }
 }
 
@@ -160,7 +141,6 @@ async function resolveWintun() {
   const { platform } = process;
 
   if (platform !== "win32") return;
-
 
   const wintunPath = path.join(cwd, "wintun/bin/amd64/wintun.dll");
   const targetPath = path.join(cwd, "src-tauri/resources", "wintun.dll");
@@ -254,8 +234,11 @@ const resolveGeoIP = () =>
   });
 
 const tasks = [
-  { name: "clash", func: () => resolveSidecar(clashS3()), retry: 5 },
-  { name: "clash-meta", func: () => resolveSidecar(clashMeta()), retry: 5 },
+  {
+    name: "clash-meta",
+    func: () => downloadAllClashMetaPlatformArch(),
+    retry: 5,
+  },
   { name: "wintun", func: resolveWintun, retry: 5, winOnly: true },
   { name: "service", func: resolveService, retry: 5, winOnly: true },
   { name: "install", func: resolveInstall, retry: 5, winOnly: true },

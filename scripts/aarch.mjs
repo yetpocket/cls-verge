@@ -111,9 +111,9 @@ async function uploadAssets(releaseId, assets) {
   }
 }
 
-if (process.platform === "darwin" && process.arch === "arm64") {
-  resolve();
-} else {
-  console.error("invalid");
-  exit(1);
-}
+resolve();
+// if (process.platform === "darwin" && process.arch === "arm64") {
+// } else {
+//   console.error("invalid");
+//   exit(1);
+// }
