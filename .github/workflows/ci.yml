@@ -80,9 +80,9 @@ jobs:
           yarn build
           rustup target add aarch64-apple-darwin
           yarn build-m1
-          cp "src-tauri/target/release/bundle/macos/Clash Verge.app" "output/Clash Verge_amd64.app"
+          cp -r "src-tauri/target/release/bundle/macos/Clash Verge.app" "output/Clash Verge_amd64.app"
           cp "src-tauri/target/release/bundle/dmg/Clash Verge_*_x64.dmg" "output/Clash Verge_amd64.dmg"
-          cp "src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Clash Verge.app" "output/Clash Verge_aarch64.app"
+          cp -r "src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Clash Verge.app" "output/Clash Verge_aarch64.app"
           cp "src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/Clash Verge_*_aarch64.dmg" "output/Clash Verge_aarch64.dmg"
 
         env:
