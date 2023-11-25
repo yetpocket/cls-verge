@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { getClashLogs } from "@/services/cmds";
-import { useClashInfo } from "@/hooks/use-clash";
+import { useClash, useClashInfo } from "@/hooks/use-clash";
 import { atomEnableLog, atomLogData } from "@/services/states";
 import { useWebsocket } from "@/hooks/use-websocket";
 
@@ -11,7 +11,7 @@ const MAX_LOG_NUM = 1000;
 // setup the log websocket
 export const useLogSetup = () => {
   const { clashInfo } = useClashInfo();
-
+  const { clash } = useClash();
   const enableLog = useRecoilValue(atomEnableLog);
   const setLogData = useSetRecoilState(atomLogData);
 
@@ -23,14 +23,18 @@ export const useLogSetup = () => {
       return [...l, { ...data, time }];
     });
   });
-
+  const logLevel = clash?.["log-level"] ?? "info";
   useEffect(() => {
     if (!enableLog || !clashInfo) return;
 
     getClashLogs().then(setLogData);
 
     const { server = "", secret = "" } = clashInfo;
-    connect(`ws://${server}/logs?token=${encodeURIComponent(secret)}`);
+    connect(
+      `ws://${server}/logs?token=${encodeURIComponent(
+        secret
+      )}?level=${logLevel}`
+    );
 
     return () => {
       disconnect();
