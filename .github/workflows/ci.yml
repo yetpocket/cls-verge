@@ -47,22 +47,32 @@ jobs:
           yarn install --network-timeout 1000000 --frozen-lockfile
           yarn run check
 
-      - name: Tauri build
-        uses: tauri-apps/tauri-action@v0
-        # enable cache even though failed
-        # continue-on-error: true
+      # - name: Tauri build
+      #   uses: tauri-apps/tauri-action@v0
+      #   # enable cache even though failed
+      #   # continue-on-error: true
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+      #     TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+      #     GITHUB_REPOSITORY: ${{ github.repository }}
+      #   with:
+      #     tagName: v__VERSION__
+      #     releaseName: "Clash Verge v__VERSION__"
+      #     releaseBody: "More new features are now supported."
+      #     releaseDraft: false
+      #     prerelease: true
+      - name: BundleLinux
+        if: startsWith(matrix.os, 'linux-')
+        # rebuild with env settings
+        run: |
+          yarn build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-        with:
-          tagName: v__VERSION__
-          releaseName: "Clash Verge v__VERSION__"
-          releaseBody: "More new features are now supported."
-          releaseDraft: false
-          prerelease: true
-
-      - name: Portable Bundle
+          VITE_WIN_PORTABLE: 1
+      - name: BuildWindows
         if: startsWith(matrix.os, 'windows-')
         # rebuild with env settings
         run: |
@@ -73,6 +83,38 @@ jobs:
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
           VITE_WIN_PORTABLE: 1
+      - name: BuildMac
+        if: startsWith(matrix.os, 'macos-')
+        # rebuild with env settings
+        run: |
+          yarn build
+          rustup target add aarch64-apple-darwin
+          yarn build-m1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          VITE_WIN_PORTABLE: 1
+      - name: Upload release
+        uses: softprops/action-gh-release@v1
+        if: ${{  success() }}
+        with:
+          tag_name: release-${{ github.ref_name }}
+          files: |
+            # linux amd64 
+            src-tauri/target/release/bundle/appimage/*.AppImage
+            src-tauri/target/release/bundle/appimage/*.deb
+            # windows amd64
+            src-tauri/target/release/bundle/windows/*.exe
+            src-tauri/target/release/bundle/windows/*.msi
+            # mac x86
+            src-tauri/target/release/bundle/macos/Clash Verge.aarch64.app.tar.gz
+            # mac m1
+            src-tauri/target/aarch64-apple-darwin/bundle/macos/Clash Verge.aarch64.app.tar.gz
+            src-tauri/target/aarch64-apple-darwin/bundle/macos/Clash Verge.aarch64.app.tar.gz.sig
+          prerelease: true
+          generate_release_notes: true
+          body_path: release.txt
 
   release-update:
     needs: release

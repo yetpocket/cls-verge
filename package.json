@@ -6,6 +6,7 @@
     "dev": "tauri dev",
     "dev:diff": "tauri dev -f verge-dev",
     "build": "yarn run check && tauri build",
+    "build-m1": "tauri build --target aarch64-apple-darwin",
     "tauri": "tauri",
     "web:dev": "vite",
     "web:build": "tsc && vite build",
