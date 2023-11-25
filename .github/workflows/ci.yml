@@ -64,10 +64,10 @@ jobs:
         run: |
           yarn build
           yarn run portable
-          cp "src-tauri/target/release/bundle/msi/Clash Verge_*_x64_en-US.msi" output/Clash-Verge_amd64-en-US.msi
-          cp "src-tauri/target/release/bundle/msi/Clash Verge_*_x64_zh-CN.msi" output/Clash-Verge_amd64-zh-CN.msi
-          cp "src-tauri/target/release/bundle/msi/Clash Verge_*_x64_ru-RU.msi" output/Clash-Verge_amd64-ru-RU.msi
-          cp src-tauri/target/release/bundle/nsis/Clash Verge_*_x64-setup.exe output/Clash-Verge_amd64-setup.exe
+          cp "src-tauri/target/release/bundle/msi/Clash Verge_*_x64_en-US.msi" "output/Clash Verge_amd64-en-US.msi"
+          cp "src-tauri/target/release/bundle/msi/Clash Verge_*_x64_zh-CN.msi" "output/Clash Verge_amd64-zh-CN.msi"
+          cp "src-tauri/target/release/bundle/msi/Clash Verge_*_x64_ru-RU.msi" "output/Clash Verge_amd64-ru-RU.msi"
+          cp "src-tauri/target/release/bundle/nsis/Clash Verge_*_x64-setup.exe" "output/Clash Verge_amd64-setup.exe"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
@@ -80,10 +80,10 @@ jobs:
           yarn build
           rustup target add aarch64-apple-darwin
           yarn build-m1
-          cp "src-tauri/target/release/bundle/macos/Clash Verge.app" "output/Clash-Verge_amd64.app"
-          cp "src-tauri/target/release/bundle/dmg/Clash Verge_*_x64.dmg" "output/Clash-Verge_amd64.dmg"
-          cp "src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Clash Verge.app" "output/Clash-Verge_aarch64.app"
-          cp "src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/Clash Verge_*_aarch64.dmg" "output/Clash-Verge_aarch64.dmg"
+          cp "src-tauri/target/release/bundle/macos/Clash Verge.app" "output/Clash Verge_amd64.app"
+          cp "src-tauri/target/release/bundle/dmg/Clash Verge_*_x64.dmg" "output/Clash Verge_amd64.dmg"
+          cp "src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Clash Verge.app" "output/Clash Verge_aarch64.app"
+          cp "src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/Clash Verge_*_aarch64.dmg" "output/Clash Verge_aarch64.dmg"
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
