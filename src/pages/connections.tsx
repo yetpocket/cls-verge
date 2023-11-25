@@ -51,7 +51,9 @@ const ConnectionsPage = () => {
   const filterConn = useMemo(() => {
     const orderFunc = orderOpts[curOrderOpt];
     const connections = connData.connections.filter((conn) =>
-      (conn.metadata.host || conn.metadata.destinationIP)?.includes(filterText)
+      (conn.metadata.host || conn.metadata.destinationIP)
+        ?.toLowerCase()
+        .includes(filterText)
     );
 
     if (orderFunc) return orderFunc(connections);

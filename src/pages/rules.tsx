@@ -14,7 +14,9 @@ const RulesPage = () => {
   const [filterText, setFilterText] = useState("");
 
   const rules = useMemo(() => {
-    return data.filter((each) => each.payload.includes(filterText));
+    return data.filter((each) =>
+      each.payload.toLowerCase().includes(filterText)
+    );
   }, [data, filterText]);
 
   return (

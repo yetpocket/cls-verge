@@ -30,7 +30,7 @@ const LogPage = () => {
   const filterLogs = useMemo(() => {
     return logData.filter((data) => {
       return (
-        data.payload.includes(filterText) &&
+        data.payload.toLowerCase().includes(filterText) &&
         (logState === "all" ? true : data.type.includes(logState))
       );
     });
