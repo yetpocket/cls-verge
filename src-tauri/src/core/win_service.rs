@@ -42,15 +42,21 @@ pub async fn install_service() -> Result<()> {
 
     let token = Token::with_current_process()?;
     let level = token.privilege_level()?;
-
+    let mut is_runas = false;
     let status = match level {
-        PrivilegeLevel::NotPrivileged => RunasCommand::new(install_path).show(false).status()?,
+        PrivilegeLevel::NotPrivileged => {
+            is_runas = true;
+            RunasCommand::new(install_path).show(false).status()?
+        }
         _ => StdCommand::new(install_path)
             .creation_flags(0x08000000)
             .status()?,
     };
 
-    if !status.success() {
+    // 从非admin提权到admin，走runas
+    // runas似乎总是返回-1
+    // 这种情况认为操作成功
+    if !status.success() && !(is_runas && status.code().is_some_and(|c| c == -1)) {
         bail!(
             "failed to install service with status {}",
             status.code().unwrap()
@@ -72,15 +78,20 @@ pub async fn uninstall_service() -> Result<()> {
 
     let token = Token::with_current_process()?;
     let level = token.privilege_level()?;
-
+    let mut is_runas = false;
     let status = match level {
-        PrivilegeLevel::NotPrivileged => RunasCommand::new(uninstall_path).show(false).status()?,
+        PrivilegeLevel::NotPrivileged => {
+            is_runas = true;
+            RunasCommand::new(uninstall_path).show(false).status()?
+        }
         _ => StdCommand::new(uninstall_path)
             .creation_flags(0x08000000)
             .status()?,
     };
-
-    if !status.success() {
+    // 从非admin提权到admin，走runas
+    // runas似乎总是返回-1
+    // 这种情况认为操作成功
+    if !status.success() && !(is_runas && status.code().is_some_and(|c| c == -1)) {
         bail!(
             "failed to uninstall service with status {}",
             status.code().unwrap()
