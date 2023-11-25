@@ -14,9 +14,12 @@ const FORCE = process.argv.includes("--force");
 const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download/Alpha`;
 
 // rustup target list
+// FIXME clash.meta-windows-amd64-compatible 带 compatible 后缀
+// 不会将我的日志打包进去
+// 用的system 还是 gvisior的区别?
 const META_MAP = {
   "win32-x64": {
-    name: "clash.meta-windows-amd64-compatible",
+    name: "clash.meta-windows-amd64",
     host: "x86_64-pc-windows-msvc",
   },
   "darwin-x64": {
