@@ -98,7 +98,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
           files: |
             output/*
-          prerelease: false
+          prerelease: true
           generate_release_notes: false
           body: release
 
