@@ -17,7 +17,7 @@ const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download
 const META_MAP = {
   "win32-x64": {
     name: "clash.meta-windows-amd64-compatible",
-    host: "x86_64-pc-windows-gnu",
+    host: "x86_64-pc-windows-msvc",
   },
   "darwin-x64": {
     name: "clash.meta-darwin-amd64",
@@ -149,7 +149,7 @@ async function resolveWintun() {
   let d2 = await fs.readdir(path.join(cwd, "wintun"));
   console.log("wintun dir", d1, d2);
   await fs.mkdirp(path.dirname(targetPath));
-  await fs.rename(wintunPath, targetPath);
+  await fs.copyFile(wintunPath, targetPath);
 
   console.log(`[INFO]: resolve wintun.dll finished`);
 }
