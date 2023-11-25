@@ -51,8 +51,8 @@ jobs:
         # rebuild with env settings
         run: |
           yarn build
-          cp "src-tauri/target/release/bundle/appimage/clash-verge_*_amd64.AppImage" "output/Clash-Verge_amd64.AppImage"
-          cp "src-tauri/target/release/bundle/deb/clash-verge*amd64.deb" "output/Clash-Verge_amd64.deb"
+          cp src-tauri/target/release/bundle/appimage/clash-verge_*_amd64.AppImage "output/Clash-Verge_amd64.AppImage"
+          cp src-tauri/target/release/bundle/deb/clash-verge*amd64.deb "output/Clash-Verge_amd64.deb"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
