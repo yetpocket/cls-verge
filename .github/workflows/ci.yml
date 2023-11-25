@@ -63,7 +63,7 @@ jobs:
       #     releaseDraft: false
       #     prerelease: true
       - name: BundleLinux
-        if: startsWith(matrix.os, 'linux-')
+        if: startsWith(matrix.os, 'ubuntu-')
         # rebuild with env settings
         run: |
           yarn build
