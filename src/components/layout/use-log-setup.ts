@@ -33,7 +33,7 @@ export const useLogSetup = () => {
     connect(
       `ws://${server}/logs?token=${encodeURIComponent(
         secret
-      )}?level=${logLevel}`
+      )}&level=${logLevel}`
     );
 
     return () => {
