@@ -1,81 +1,66 @@
 use serde_yaml::{Mapping, Value};
 
-macro_rules! revise {
-    ($map: expr, $key: expr, $val: expr) => {
-        let ret_key = Value::String($key.into());
-        $map.insert(ret_key, Value::from($val));
-    };
-}
-
-// if key not exists then append value
-macro_rules! append {
-    ($map: expr, $key: expr, $val: expr) => {
-        let ret_key = Value::String($key.into());
-        if !$map.contains_key(&ret_key) {
-            $map.insert(ret_key, Value::from($val));
-        }
-    };
-}
-
-pub fn use_tun(mut config: Mapping, enable: bool) -> Mapping {
-    let tun_key = Value::from("tun");
-    let tun_val = config.get(&tun_key);
-
-    if !enable && tun_val.is_none() {
+pub fn use_tun(mut config: Mapping, ui_has_tun_enable: bool) -> Mapping {
+    if !ui_has_tun_enable {
+        // 关闭tun
+        config.remove("tun");
         return config;
     }
-
-    let mut tun_val = tun_val.map_or(Mapping::new(), |val| {
-        val.as_mapping().cloned().unwrap_or(Mapping::new())
-    });
-
-    revise!(tun_val, "enable", enable);
-    if enable {
-        append!(tun_val, "stack", "gvisor");
-        append!(tun_val, "dns-hijack", vec!["any:53"]);
-        append!(tun_val, "auto-route", true);
-        append!(tun_val, "auto-detect-interface", true);
+    // 如果配置文件没有
+    // tun:
+    //  enable: true
+    // 且开启tun功能，verge自己添加tun配置
+    // 否则使用配置文件中的tun配置
+    let config_tun = config.get("tun");
+    let config_has_valid_tun =
+        config_tun.is_some_and(|f| f.get("enable").is_some_and(|f| f.is_bool()));
+    let mut tun_val = Value::Mapping(Mapping::new());
+    match config_tun {
+        Some(tun) if config_has_valid_tun => {
+            tun_val = tun.clone();
+        }
+        _ => {
+            tun_val["enable"] = true.into();
+            tun_val["stack"] = "gvisor".into();
+            tun_val["dns-hijack"] = vec!["any:53"].into();
+            tun_val["auto-route"] = true.into();
+            tun_val["auto-detect-interface"] = true.into();
+        }
     }
-
-    revise!(config, "tun", tun_val);
-
-    if enable {
-        use_dns_for_tun(config)
+    config.insert("tun".into(), tun_val);
+    // 如果配置文件没有
+    // dns:
+    //  enable: true
+    // 且开启tun功能，verge自己添加dns配置
+    // 否则使用配置文件中的tun配置
+    let dns_config = config.get("dns");
+    let mut dns = Value::Mapping(Mapping::new());
+    if dns_config.is_none() {
+        use_dns_for_tun(&mut dns);
     } else {
-        config
+        dns = dns_config.unwrap().clone();
     }
+    config.insert("dns".into(), dns);
+    return config;
 }
 
-fn use_dns_for_tun(mut config: Mapping) -> Mapping {
-    let dns_key = Value::from("dns");
-    let dns_val = config.get(&dns_key);
-
-    let mut dns_val = dns_val.map_or(Mapping::new(), |val| {
-        val.as_mapping().cloned().unwrap_or(Mapping::new())
-    });
-
+fn use_dns_for_tun(dns: &mut Value) {
+    let mut value = Value::Mapping(Mapping::new());
     // 开启tun将同时开启dns
-    revise!(dns_val, "enable", true);
+    value["enable"] = true.into();
+    value["enhanced-mode"] = "fake-ip".into();
+    value["fake-ip-range"] = "198.18.0.1/16".into();
+    value["nameserver"] = vec!["114.114.114.114", "223.5.5.5"].into();
+    value["fallback"] = (vec![] as Vec<String>).into();
 
-    // append!(dns_val, "enhanced-mode", "fake-ip");
-    // append!(dns_val, "fake-ip-range", "198.18.0.1/16");
-    // append!(
-    //     dns_val,
-    //     "nameserver",
-    //     vec!["114.114.114.114", "223.5.5.5", "8.8.8.8"]
-    // );
-    // append!(dns_val, "fallback", vec![] as Vec<&str>);
-
-    // #[cfg(target_os = "windows")]
-    // append!(
-    //     dns_val,
-    //     "fake-ip-filter",
-    //     vec![
-    //         "dns.msftncsi.com",
-    //         "www.msftncsi.com",
-    //         "www.msftconnecttest.com"
-    //     ]
-    // );
-    revise!(config, "dns", dns_val);
-    config
+    #[cfg(target_os = "windows")]
+    {
+        value["fake-ip-filter"] = vec![
+            "dns.msftncsi.com",
+            "www.msftncsi.com",
+            "www.msftconnecttest.com",
+        ]
+        .into();
+    }
+    *dns = value;
 }
