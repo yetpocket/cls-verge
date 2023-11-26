@@ -176,5 +176,8 @@ export async function installService() {
 }
 
 export async function uninstallService() {
-  return invoke<void>("uninstall_service");
+  return new Promise(async (resolve) => {
+    await invoke<void>("uninstall_service");
+    setTimeout(resolve, 500);
+  });
 }
