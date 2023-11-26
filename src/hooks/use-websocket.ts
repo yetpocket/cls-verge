@@ -35,14 +35,8 @@ export const useWebsocket = (onMessage: WsMsgFn, options?: WsOptions) => {
 
       ws.addEventListener("message", onMessage);
       ws.addEventListener("error", () => {
-        errorCount -= 1;
-
-        if (errorCount >= 0) {
-          timerRef.current = setTimeout(connectHelper, 2500);
-        } else {
-          disconnect();
-          options?.onError?.();
-        }
+        disconnect();
+        timerRef.current = setTimeout(connectHelper, 2500);
       });
     };
 
