@@ -78,6 +78,8 @@ jobs:
         # rebuild with env settings
         run: |
           brew install jq
+          sudo chown root:admin src-tauri/sidecar/*
+          sudo chmod +sx src-tauri/sidecar/*
           yarn build
           rustup target add aarch64-apple-darwin
           yarn build-m1
