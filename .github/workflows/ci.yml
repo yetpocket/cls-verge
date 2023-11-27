@@ -77,13 +77,15 @@ jobs:
         if: startsWith(matrix.os, 'macos-')
         # rebuild with env settings
         run: |
+          brew install jq
           yarn build
           rustup target add aarch64-apple-darwin
           yarn build-m1
+          version=$(jq -rM .package.version src-tauri/tauri.conf.json)
           tar cvzf output/ClashVerge_amd64.app.tar.gz -C src-tauri/target/release/bundle/macos/ ClashVerge.app
-          tar cvzf output/ClashVerge_amd64.dmg.tar.gz -C src-tauri/target/release/bundle/dmg $(basename $(ls src-tauri/target/release/bundle/dmg/*.dmg))
+          tar cvzf output/ClashVerge_amd64.dmg.tar.gz -C src-tauri/target/release/bundle/dmg ClashVerge\_$version\_x64.dmg
           tar cvzf output/ClashVerge_aarch64.app.tar.gz -C src-tauri/target/aarch64-apple-darwin/release/bundle/macos ClashVerge.app
-          tar cvzf output/ClashVerge_aarch64.dmg.tar.gz -C src-tauri/target/aarch64-apple-darwin/release/bundle/dmg $(basename $(ls src-tauri/target/release/bundle/dmg/*.dmg))
+          tar cvzf output/ClashVerge_aarch64.dmg.tar.gz -C src-tauri/target/aarch64-apple-darwin/release/bundle/dmg ClashVerge\_$version\_aarch64.dmg
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
