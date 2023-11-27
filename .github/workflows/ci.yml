@@ -81,9 +81,9 @@ jobs:
           rustup target add aarch64-apple-darwin
           yarn build-m1
           tar cvzf output/ClashVerge_amd64.app.tar.gz -C src-tauri/target/release/bundle/macos/ ClashVerge.app
-          tar cvzf output/ClashVerge_amd64.dmg.tar.gz -C src-tauri/target/release/bundle/dmg $(ls src-tauri/target/release/bundle/dmg/*.dmg)
+          tar cvzf output/ClashVerge_amd64.dmg.tar.gz -C src-tauri/target/release/bundle/dmg $(basename $(ls src-tauri/target/release/bundle/dmg/*.dmg))
           tar cvzf output/ClashVerge_aarch64.app.tar.gz -C src-tauri/target/aarch64-apple-darwin/release/bundle/macos ClashVerge.app
-          tar cvzf output/ClashVerge_aarch64.dmg.tar.gz -C src-tauri/target/aarch64-apple-darwin/release/bundle/dmg $(ls src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg)
+          tar cvzf output/ClashVerge_aarch64.dmg.tar.gz -C src-tauri/target/aarch64-apple-darwin/release/bundle/dmg $(basename $(ls src-tauri/target/release/bundle/dmg/*.dmg))
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
