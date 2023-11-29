@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "yarn run check && tauri dev",
     "dev:diff": "yarn run check && tauri dev -f verge-dev",
-    "build": "yarn run check && tauri build",
-    "build-m1": "tauri build --target aarch64-apple-darwin",
+    "build": "yarn run check && tauri build --verbose",
+    "build-m1": "tauri build --target aarch64-apple-darwin --verbose",
     "tauri": "tauri",
     "web:dev": "vite",
     "web:build": "tsc && vite build",
