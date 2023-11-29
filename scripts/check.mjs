@@ -11,7 +11,9 @@ const TEMP_DIR = path.join(cwd, "node_modules/.verge");
 const FORCE = process.argv.includes("--force");
 
 /* ======= clash meta ======= */
-const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download/Alpha`;
+const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download/latest`;
+const SERVICE_URL =
+  "https://github.com/yetpocket/cls-verge-service/releases/download/latest";
 
 const META_MAP = {
   "win32-x64": {
@@ -35,9 +37,6 @@ const META_MAP = {
     host: "aarch64-unknown-linux-gnu",
   },
 };
-
-const SERVICE_URL =
-  "https://github.com/yetpocket/cls-verge-service/releases/download/latest";
 
 /**
  * check available
