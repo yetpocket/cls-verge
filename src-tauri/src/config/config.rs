@@ -45,7 +45,7 @@ impl Config {
         Self::global().runtime_config.clone()
     }
 
-    /// 初始化配置
+    /// App启动初始化配置
     pub fn init_config() -> Result<()> {
         crate::log_err!(Self::generate());
         if let Err(err) = Self::generate_file(ConfigType::Run) {
@@ -64,14 +64,14 @@ impl Config {
         Ok(())
     }
 
-    /// 将配置丢到对应的文件中
+    /// clash配置文件写入clash-verge.yaml
     pub fn generate_file(typ: ConfigType) -> Result<PathBuf> {
         let path = match typ {
             ConfigType::Run => dirs::app_home_dir()?.join(RUNTIME_CONFIG),
             ConfigType::Check => temp_dir().join(CHECK_CONFIG),
         };
 
-        let runtime = Config::runtime();
+        let runtime: Draft<IRuntime> = Config::runtime();
         let runtime = runtime.latest();
         let config = runtime
             .config
@@ -82,7 +82,7 @@ impl Config {
         Ok(path)
     }
 
-    /// 生成配置存好
+    /// 生成clash最终使用的配置文件
     pub fn generate() -> Result<()> {
         let (config, exists_keys, logs) = enhance::enhance();
 
