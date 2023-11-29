@@ -15,6 +15,22 @@ const META_URL_PREFIX = `https://github.com/yetpocket/cls-meta/releases/download
 const SERVICE_URL =
   "https://github.com/yetpocket/cls-verge-service/releases/download/latest";
 
+const resolveMmdb = () =>
+  resolveResource({
+    file: "Country.mmdb",
+    downloadURL: `https://github.com/yetpocket/cls-rules-dat/releases/download/latest/Country.mmdb`,
+  });
+const resolveGeosite = () =>
+  resolveResource({
+    file: "geosite.dat",
+    downloadURL: `https://github.com/yetpocket/cls-rules-dat/releases/download/latest/geosite.dat`,
+  });
+const resolveGeoIP = () =>
+  resolveResource({
+    file: "geoip.dat",
+    downloadURL: `https://github.com/yetpocket/cls-rules-dat/releases/download/latest/geoip.dat`,
+  });
+
 const META_MAP = {
   "win32-x64": {
     name: "clash.meta-windows-amd64",
@@ -215,21 +231,6 @@ const resolveUninstall = () =>
   resolveResource({
     file: "uninstall-service.exe",
     downloadURL: `${SERVICE_URL}/uninstall-service.exe`,
-  });
-const resolveMmdb = () =>
-  resolveResource({
-    file: "Country.mmdb",
-    downloadURL: `https://github.com/Dreamacro/maxmind-geoip/releases/download/20230812/Country.mmdb`,
-  });
-const resolveGeosite = () =>
-  resolveResource({
-    file: "geosite.dat",
-    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat`,
-  });
-const resolveGeoIP = () =>
-  resolveResource({
-    file: "geoip.dat",
-    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat`,
   });
 
 const tasks = [
