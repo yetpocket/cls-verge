@@ -46,12 +46,12 @@ pub fn resolve_reset() {
 }
 
 /// create main window
-pub fn create_window(app_handle: &AppHandle) {
+pub async fn create_window(app_handle: &AppHandle) -> anyhow::Result<()>{
     if let Some(window) = app_handle.get_window("main") {
-        trace_err!(window.unminimize(), "set win unminimize");
-        trace_err!(window.show(), "set win visible");
-        trace_err!(window.set_focus(), "set win focus");
-        return;
+        window.unminimize()?;
+        window.show()?;
+        window.set_focus()?;
+        return Ok(());
     }
 
     let mut builder = tauri::window::WindowBuilder::new(
@@ -153,6 +153,7 @@ pub fn create_window(app_handle: &AppHandle) {
 
     #[cfg(target_os = "linux")]
     crate::log_err!(builder.decorations(true).transparent(false).build());
+    return Ok(())
 }
 
 /// save window size and position
