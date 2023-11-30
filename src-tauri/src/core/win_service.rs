@@ -2,7 +2,7 @@
 
 use crate::config::Config;
 use crate::utils::dirs;
-use anyhow::{bail, Context, Result};
+use anyhow::{bail, Context};
 use deelevate::{PrivilegeLevel, Token};
 use runas::Command as RunasCommand;
 use serde::{Deserialize, Serialize};
@@ -32,7 +32,7 @@ pub struct JsonResponse {
 
 /// Install the Clash Verge Service
 /// 该函数应该在协程或者线程中执行，避免UAC弹窗阻塞主线程
-pub async fn install_service() -> Result<()> {
+pub async fn install_service() -> anyhow::Result<()> {
     let binary_path = dirs::service_path()?;
     let install_path = binary_path.with_file_name("install-service.exe");
 
@@ -68,7 +68,7 @@ pub async fn install_service() -> Result<()> {
 
 /// Uninstall the Clash Verge Service
 /// 该函数应该在协程或者线程中执行，避免UAC弹窗阻塞主线程
-pub async fn uninstall_service() -> Result<()> {
+pub async fn uninstall_service() -> anyhow::Result<()> {
     let binary_path = dirs::service_path()?;
     let uninstall_path = binary_path.with_file_name("uninstall-service.exe");
 
@@ -102,24 +102,22 @@ pub async fn uninstall_service() -> Result<()> {
 }
 
 /// check the windows service status
-pub async fn check_service() -> Result<JsonResponse> {
+pub async fn check_service() -> anyhow::Result<JsonResponse> {
     let url = format!("{SERVICE_URL}/get_clash");
     let response = reqwest::ClientBuilder::new()
         .no_proxy()
         .build()?
         .get(url)
         .send()
-        .await
-        .context("failed to connect to the Clash Verge Service")?
+        .await?
         .json::<JsonResponse>()
-        .await
-        .context("failed to parse the Clash Verge Service response")?;
+        .await?;
 
     Ok(response)
 }
 
 /// start the clash by service
-pub(super) async fn run_core_by_service(config_file: &PathBuf) -> Result<()> {
+pub(super) async fn run_core_by_service(config_file: &PathBuf) -> anyhow::Result<()> {
     let status = check_service().await?;
 
     if status.code == 0 {
@@ -169,7 +167,7 @@ pub(super) async fn run_core_by_service(config_file: &PathBuf) -> Result<()> {
 }
 
 /// stop the clash by service
-pub(super) async fn stop_core_by_service() -> Result<()> {
+pub(super) async fn stop_core_by_service() -> anyhow::Result<()> {
     let url = format!("{SERVICE_URL}/stop_clash");
     let res = reqwest::ClientBuilder::new()
         .no_proxy()
@@ -178,8 +176,7 @@ pub(super) async fn stop_core_by_service() -> Result<()> {
         .send()
         .await?
         .json::<JsonResponse>()
-        .await
-        .context("failed to connect to the Clash Verge Service")?;
+        .await?;
 
     if res.code != 0 {
         bail!(res.msg);

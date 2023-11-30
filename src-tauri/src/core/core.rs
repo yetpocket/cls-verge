@@ -80,7 +80,7 @@ impl CoreManager {
     }
 
     /// 启动核心
-    pub async fn run_core(&self) -> Result<()> {
+    pub async fn run_core(&self) -> anyhow::Result<()> {
         let config_path = Config::generate_file(ConfigType::Run)?;
 
         #[allow(unused_mut)]
