@@ -10,10 +10,13 @@ mod enhance;
 mod feat;
 mod utils;
 
+use std::env;
+
 use crate::utils::{init, resolve, server};
 use tauri::{api, SystemTray};
 
 fn main() -> std::io::Result<()> {
+    env::set_var("RUST_BACKTRACE", "1");
     // 单例检测
     if server::check_singleton().is_err() {
         println!("app exists");

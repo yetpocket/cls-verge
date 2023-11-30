@@ -56,8 +56,7 @@ pub async fn delete_profile(index: String) -> CmdResult {
 #[tauri::command]
 pub async fn patch_profiles_config(profiles: IProfiles) -> CmdResult {
     wrap_err!({ Config::profiles().draft().patch_config(profiles) })?;
-
-    match CoreManager::global().update_config().await {
+    let res = match CoreManager::global().update_config().await {
         Ok(_) => {
             handle::Handle::refresh_clash();
             Config::profiles().apply();
@@ -66,10 +65,11 @@ pub async fn patch_profiles_config(profiles: IProfiles) -> CmdResult {
         }
         Err(err) => {
             Config::profiles().discard();
-            log::error!(target: "app", "{err}");
-            Err(format!("{err}"))
+            log::error!(target: "app", "{:?}", err);
+            Err(format!("{}", err))
         }
-    }
+    };
+    res
 }
 
 /// 修改某个profile item的

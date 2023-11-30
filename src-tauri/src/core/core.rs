@@ -61,7 +61,7 @@ impl CoreManager {
 
         let app_dir = dirs::app_home_dir()?;
         let app_dir = dirs::path_to_str(&app_dir)?;
-
+        log::info!("found clash binary {}", clash_core);
         let output = Command::new_sidecar(clash_core)?
             .args(["-t", "-d", app_dir, "-f", config_path])
             .output()?;
@@ -139,7 +139,7 @@ impl CoreManager {
         let app_dir = dirs::path_to_str(&app_dir)?;
 
         let clash_core = { Config::verge().latest().clash_core.clone() };
-        let clash_core = clash_core.unwrap_or("clash".into());
+        let clash_core = clash_core.unwrap_or("clash-meta".into());
         let is_clash = clash_core == "clash";
 
         let config_path = dirs::path_to_str(&config_path)?;
