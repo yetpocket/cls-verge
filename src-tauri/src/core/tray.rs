@@ -1,4 +1,4 @@
-use crate::{cmds, config::Config, feat, utils::resolve};
+use crate::{cmds, config::Config, feat, into_anyhow, utils::resolve};
 use anyhow::Result;
 use tauri::{
     api, AppHandle, CustomMenuItem, Manager, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
@@ -139,37 +139,45 @@ impl Tray {
     }
 
     pub fn on_system_tray_event(app_handle: &AppHandle, event: SystemTrayEvent) {
-        match event {
-            SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
-                mode @ ("rule_mode" | "global_mode" | "direct_mode" | "script_mode") => {
-                    let mode = &mode[0..mode.len() - 5];
-                    feat::change_clash_mode(mode.into());
-                }
+        tauri::async_runtime::spawn(async move {
+            let res = match event {
+                SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
+                    mode @ ("rule_mode" | "global_mode" | "direct_mode" | "script_mode") => {
+                        let mode = &mode[0..mode.len() - 5];
+                        feat::change_clash_mode(mode.into()).await
+                    }
 
-                "open_window" => resolve::create_window(app_handle),
-                "system_proxy" => feat::toggle_system_proxy(),
-                "tun_mode" => feat::toggle_tun_mode(),
-                "copy_env" => feat::copy_clash_env(),
-                "open_app_dir" => crate::log_err!(cmds::open_app_dir()),
-                "open_core_dir" => crate::log_err!(cmds::open_core_dir()),
-                "open_logs_dir" => crate::log_err!(cmds::open_logs_dir()),
-                "restart_clash" => feat::restart_clash_core(),
-                "restart_app" => api::process::restart(&app_handle.env()),
-                "quit" => {
-                    let _ = resolve::save_window_size_position(app_handle, true);
+                    "open_window" => resolve::create_window(app_handle).await,
+                    "system_proxy" => feat::toggle_system_proxy().await,
+                    "tun_mode" => feat::toggle_tun_mode().await,
+                    "copy_env" => feat::copy_clash_env(),
+                    "open_app_dir" => into_anyhow!(cmds::open_app_dir()),
+                    "open_core_dir" => into_anyhow!(cmds::open_core_dir()),
+                    "open_logs_dir" => into_anyhow!(cmds::open_logs_dir()),
+                    "restart_clash" => feat::restart_clash_core(),
+                    "restart_app" => {
+                        api::process::restart(&app_handle.env());
+                        Ok(())
+                    }
+                    "quit" => {
+                        let _ = resolve::save_window_size_position(app_handle, true);
 
-                    resolve::resolve_reset();
-                    api::process::kill_children();
-                    app_handle.exit(0);
-                    std::process::exit(0);
+                        resolve::resolve_reset();
+                        api::process::kill_children();
+                        app_handle.exit(0);
+                        std::process::exit(0);
+                    }
+                    _ => Ok(()),
+                },
+                #[cfg(target_os = "windows")]
+                SystemTrayEvent::LeftClick { .. } => {
+                    resolve::create_window(app_handle);
                 }
-                _ => {}
-            },
-            #[cfg(target_os = "windows")]
-            SystemTrayEvent::LeftClick { .. } => {
-                resolve::create_window(app_handle);
+                _ => Ok(()),
+            };
+            if let Err(err) = res {
+                log::error!("{:?}", err)
             }
-            _ => {}
-        }
+        });
     }
 }

@@ -5,12 +5,13 @@ use crate::{
     utils::{dirs, help},
 };
 use crate::{ret_err, wrap_err};
-use anyhow::{Context, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use serde_yaml::Mapping;
 use std::collections::{HashMap, VecDeque};
 use sysproxy::Sysproxy;
 
-type CmdResult<T = ()> = Result<T, String>;
+pub type CmdResult<T = ()> = Result<T, String>;
+
 
 #[tauri::command]
 pub fn get_profiles() -> CmdResult<IProfiles> {
@@ -208,7 +209,8 @@ pub fn get_clash_logs() -> CmdResult<VecDeque<String>> {
 #[tauri::command]
 pub fn open_app_dir() -> CmdResult<()> {
     let app_dir = wrap_err!(dirs::app_home_dir())?;
-    wrap_err!(open::that(app_dir))
+    wrap_err!(open::that(app_dir))?;
+    Ok(())
 }
 
 #[tauri::command]

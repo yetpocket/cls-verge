@@ -22,60 +22,53 @@ pub fn open_dashboard() {
 }
 
 // 重启clash
-pub fn restart_clash_core() {
-    tauri::async_runtime::spawn(async {
-        match CoreManager::global().run_core().await {
-            Ok(_) => {
-                handle::Handle::refresh_clash();
-                handle::Handle::notice_message("set_config::ok", "ok");
-            }
-            Err(err) => {
-                handle::Handle::notice_message("set_config::error", format!("{err}"));
-                log::error!(target:"app", "{err}");
-            }
+pub async fn restart_clash_core() -> anyhow::Result<()> {
+    match CoreManager::global().run_core().await {
+        Ok(_) => {
+            handle::Handle::refresh_clash();
+            handle::Handle::notice_message("set_config::ok", "ok");
+            Ok(())
         }
-    });
+        Err(err) => {
+            handle::Handle::notice_message("set_config::error", format!("{err}"));
+            Err(err)
+        }
+    }
 }
 
 // 切换模式 rule/global/direct/script mode
-pub fn change_clash_mode(mode: String) {
+pub async fn change_clash_mode(mode: String) -> anyhow::Result<()> {
     let mut mapping = Mapping::new();
     mapping.insert(Value::from("mode"), mode.clone().into());
+    log::debug!(target: "app", "change clash mode to {mode}");
 
-    tauri::async_runtime::spawn(async move {
-        log::debug!(target: "app", "change clash mode to {mode}");
+    match clash_api::patch_configs(&mapping).await {
+        Ok(_) => {
+            // 更新配置
+            Config::clash().data().patch_config(mapping);
 
-        match clash_api::patch_configs(&mapping).await {
-            Ok(_) => {
-                // 更新配置
-                Config::clash().data().patch_config(mapping);
-
-                if Config::clash().data().save_config().is_ok() {
-                    handle::Handle::refresh_clash();
-                    log_err!(handle::Handle::update_systray_part());
-                }
+            if Config::clash().data().save_config().is_ok() {
+                handle::Handle::refresh_clash();
+                log_err!(handle::Handle::update_systray_part());
             }
-            Err(err) => log::error!(target: "app", "{err}"),
         }
-    });
+        Err(err) => log::error!(target: "app", "{err}"),
+    }
+    Ok(())
 }
 
 // 切换系统代理
-pub fn toggle_system_proxy() {
+pub async fn toggle_system_proxy() -> anyhow::Result<()> {
     let enable = Config::verge().draft().enable_system_proxy.clone();
     let enable = enable.unwrap_or(false);
+    patch_verge(IVerge {
+        enable_system_proxy: Some(!enable),
+        ..IVerge::default()
+    })
+    .await?;
+    handle::Handle::refresh_verge();
 
-    tauri::async_runtime::spawn(async move {
-        match patch_verge(IVerge {
-            enable_system_proxy: Some(!enable),
-            ..IVerge::default()
-        })
-        .await
-        {
-            Ok(_) => handle::Handle::refresh_verge(),
-            Err(err) => log::error!(target: "app", "{err}"),
-        }
-    });
+    Ok(())
 }
 
 // 打开系统代理
@@ -109,21 +102,16 @@ pub fn disable_system_proxy() {
 }
 
 // 切换tun模式
-pub fn toggle_tun_mode() {
+pub async fn toggle_tun_mode() -> anyhow::Result<()> {
     let enable = Config::verge().data().enable_tun_mode.clone();
     let enable = enable.unwrap_or(false);
-
-    tauri::async_runtime::spawn(async move {
-        match patch_verge(IVerge {
-            enable_tun_mode: Some(!enable),
-            ..IVerge::default()
-        })
-        .await
-        {
-            Ok(_) => handle::Handle::refresh_verge(),
-            Err(err) => log::error!(target: "app", "{err}"),
-        }
-    });
+    patch_verge(IVerge {
+        enable_tun_mode: Some(!enable),
+        ..IVerge::default()
+    })
+    .await?;
+    handle::Handle::refresh_verge();
+    Ok(())
 }
 
 // 打开tun模式
@@ -332,10 +320,11 @@ async fn update_core_config() -> Result<()> {
 }
 
 /// copy env variable
-pub fn copy_clash_env() {
+pub fn copy_clash_env() -> anyhow::Result<()> {
     let port = { Config::clash().data().get_client_info().port };
     let text = format!("export https_proxy=http://127.0.0.1:{port} http_proxy=http://127.0.0.1:{port} all_proxy=socks5://127.0.0.1:{port}");
 
     let mut cliboard = Clipboard::new();
     cliboard.write_text(text);
+    Ok(())
 }

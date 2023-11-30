@@ -10,10 +10,15 @@ mod enhance;
 mod feat;
 mod utils;
 
+use std::env;
+
 use crate::utils::{init, resolve, server};
+use anyhow::anyhow;
 use tauri::{api, SystemTray};
 
 fn main() -> std::io::Result<()> {
+    env::set_var("RUST_BACKTRACE", "1");
+
     // 单例检测
     if server::check_singleton().is_err() {
         println!("app exists");
@@ -21,7 +26,8 @@ fn main() -> std::io::Result<()> {
     }
 
     crate::log_err!(init::init_config());
-
+    let err = anyhow!("test backtrace");
+    log::info!("{:?}", err);
     #[allow(unused_mut)]
     let mut builder = tauri::Builder::default()
         .system_tray(SystemTray::new())
