@@ -13,7 +13,7 @@ sudo chmod +sx /Applications/ClashVerge.app/Contents/MacOS/clash-meta
 #### Linux enable tun report Permission denied
 
 ```
-setcap cap_net_bind_service,cap_net_admin=+ep /usr/bin/clash-meta
+sudo setcap cap_net_bind_service,cap_net_admin=+ep /usr/bin/clash-meta
 ```
 
 ## Development
