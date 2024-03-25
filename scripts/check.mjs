@@ -132,9 +132,9 @@ async function resolveSidecar(binInfo) {
         readStream
           .pipe(zlib.createGunzip().on("error", onError))
           .pipe(writeStream)
-          .on("finish", () => {
+          .on("finish", async () => {
             console.log(`[INFO]: "${name}" gunzip finished`);
-            execSync(`chmod 755 ${sidecarPath}`);
+            await fs.chmod(sidecarPath, 755);
             console.log(`[INFO]: "${name}" chmod binary finished`);
             resolve();
           })
