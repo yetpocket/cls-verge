@@ -75,15 +75,12 @@ impl ChainItem {
 }
 
 impl ChainSupport {
-    pub fn is_support(&self, core: Option<&String>) -> bool {
-        match core {
-            Some(core) => match (self, core.as_str()) {
-                (ChainSupport::All, _) => true,
-                (ChainSupport::Clash, "clash") => true,
-                (ChainSupport::ClashMeta, "clash-meta") => true,
-                _ => false,
-            },
-            None => true,
+    pub fn is_support(&self, core: &String) -> bool {
+        match (self, core.as_str()) {
+            (ChainSupport::All, _) => true,
+            (ChainSupport::Clash, "clash") => true,
+            (ChainSupport::ClashMeta, "clash-meta") => true,
+            _ => false,
         }
     }
 }

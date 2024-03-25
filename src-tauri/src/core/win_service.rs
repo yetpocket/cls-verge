@@ -125,8 +125,7 @@ pub(super) async fn run_core_by_service(config_file: &PathBuf) -> anyhow::Result
         sleep(Duration::from_secs(1)).await;
     }
 
-    let clash_core = { Config::verge().latest().clash_core.clone() };
-    let clash_core = clash_core.unwrap_or("clash".into());
+    let clash_core =  Config::verge().latest().clash_core.clone();
 
     let clash_bin = format!("{clash_core}.exe");
     let bin_path = current_exe()?.with_file_name(clash_bin);

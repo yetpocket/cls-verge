@@ -36,9 +36,11 @@ apt install libwebkit2gtk-4.0-dev \
 
 #### windows
 
-Download build tool, msvc required
+1. Download build tool, msvc required
+   https://visualstudio.microsoft.com/visual-cpp-build-tools/
 
-https://visualstudio.microsoft.com/visual-cpp-build-tools/
+2. Add patch.exe to PATH
+   https://github.com/DelSkayn/rquickjs/issues/88#issuecomment-1292626358
 
 ### install, run, build
 

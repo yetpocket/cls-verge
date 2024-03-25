@@ -95,7 +95,7 @@ pub fn enhance() -> (Mapping, Vec<String>, HashMap<String, ResultLog>) {
     if enable_builtin {
         ChainItem::builtin()
             .into_iter()
-            .filter(|(s, _)| s.is_support(clash_core.as_ref()))
+            .filter(|(s, _)| s.is_support(&clash_core))
             .map(|(_, c)| c)
             .for_each(|item| {
                 log::debug!(target: "app", "run builtin script {}", item.uid);

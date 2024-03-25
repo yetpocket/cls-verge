@@ -61,8 +61,8 @@ pub struct IVerge {
     pub web_ui_list: Option<Vec<String>>,
 
     /// clash core path
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub clash_core: Option<String>,
+    // #[serde(skip_serializing_if = "Option::is_none")]
+    pub clash_core: String,
 
     /// hotkey map
     /// format: {func},{key}
@@ -121,7 +121,7 @@ impl IVerge {
 
     pub fn template() -> Self {
         Self {
-            clash_core: Some("clash-meta".into()),
+            clash_core: "clash-meta".into(),
             language: Some("en".into()),
             theme_mode: Some("system".into()),
             theme_blur: Some(false),
@@ -150,9 +150,7 @@ impl IVerge {
     pub fn patch_config(&mut self, patch: IVerge) {
         macro_rules! patch {
             ($key: tt) => {
-                if patch.$key.is_some() {
-                    self.$key = patch.$key;
-                }
+                self.$key = patch.$key;
             };
         }
 
