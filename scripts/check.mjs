@@ -108,6 +108,7 @@ async function resolveSidecar(binInfo) {
   const tempExe = path.join(tempDir, exeFile);
 
   await fs.mkdirp(tempDir);
+  execSync(`ls -ila ${tempDir}`);
   try {
     if (!(await fs.pathExists(tempZip))) {
       await downloadFile(downloadURL, tempZip);
@@ -136,6 +137,7 @@ async function resolveSidecar(binInfo) {
           .on("finish", async () => {
             console.log(`[INFO]: "${name}" gunzip finished`);
             ChmodSync(sidecarPath, 755);
+            execSync(`ls -ila ${sidecarPath}`);
             console.log(`[INFO]: "${name}" chmod binary finished`);
             resolve();
           })
