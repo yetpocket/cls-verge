@@ -134,7 +134,7 @@ async function resolveSidecar(binInfo) {
           .pipe(writeStream)
           .on("finish", async () => {
             console.log(`[INFO]: "${name}" gunzip finished`);
-            await fs.chmod(sidecarPath, 755);
+            fs.chmodSync(sidecarPath, 755);
             console.log(`[INFO]: "${name}" chmod binary finished`);
             resolve();
           })
