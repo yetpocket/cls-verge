@@ -1,4 +1,5 @@
 import fs from "fs-extra";
+import { chmodSync as ChmodSync } from "node:fs";
 import zlib from "zlib";
 import path from "path";
 import AdmZip from "adm-zip";
@@ -134,7 +135,7 @@ async function resolveSidecar(binInfo) {
           .pipe(writeStream)
           .on("finish", async () => {
             console.log(`[INFO]: "${name}" gunzip finished`);
-            fs.chmodSync(sidecarPath, 755);
+            ChmodSync(sidecarPath, 755);
             console.log(`[INFO]: "${name}" chmod binary finished`);
             resolve();
           })
