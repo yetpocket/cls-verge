@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "yarn run check && tauri dev",
     "dev:diff": "yarn run check && tauri dev -f verge-dev",
-    "build": "yarn run check && cross-env CI=true tauri build --verbose",
+    "build": "cross-env CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG=true yarn run check && cross-env CI=true tauri build --verbose",
     "build-m1": "cross-env CI=true tauri build --target aarch64-apple-darwin --verbose",
     "tauri": "tauri",
     "web:dev": "vite",
@@ -15,7 +15,7 @@
     "check": "node scripts/check.mjs",
     "updater": "node scripts/updater.mjs",
     "publish": "node scripts/publish.mjs",
-    "portable": "node scripts/portable.mjs",
+    "portable": "cross-env CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG=true node scripts/portable.mjs",
     "prepare": "husky install"
   },
   "dependencies": {
