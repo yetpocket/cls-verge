@@ -6,7 +6,6 @@ import AdmZip from "adm-zip";
 import fetch from "node-fetch";
 import proxyAgent from "https-proxy-agent";
 import { execSync } from "child_process";
-
 const cwd = process.cwd();
 const TEMP_DIR = path.join(cwd, "node_modules/.verge");
 const FORCE = process.argv.includes("--force");
@@ -130,6 +129,7 @@ async function resolveSidecar(binInfo) {
       // gz
       const readStream = fs.createReadStream(tempZip);
       const writeStream = fs.createWriteStream(sidecarPath);
+      console.log(`[INFO]: sidecarPath ${sidecarPath}, cwd: ${process.cwd()}`);
       await new Promise((resolve, reject) => {
         const onError = (error) => {
           console.error(`[ERROR]: "${name}" gz failed:`, error.message);
@@ -140,8 +140,12 @@ async function resolveSidecar(binInfo) {
           .pipe(writeStream)
           .on("finish", async () => {
             console.log(`[INFO]: "${name}" gunzip finished`);
+            consoleExecSync(`ls -ila ${sidecarPath}`);
             ChmodSync(sidecarPath, 755);
-            consoleExecSync(`chmod 755 ${sidecarPath}`);
+            console.log("chmod exec finished");
+            // if (process.platform != "win32") {
+            //   consoleExecSync(`chmod 755 ${sidecarPath}`);
+            // }
             consoleExecSync(`ls -ila ${sidecarPath}`);
             console.log(`[INFO]: "${name}" chmod binary finished`);
             resolve();
