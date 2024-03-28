@@ -141,7 +141,7 @@ async function resolveSidecar(binInfo) {
           .on("finish", async () => {
             console.log(`[INFO]: "${name}" gunzip finished`);
             consoleExecSync(`ls -ila ${sidecarPath}`);
-            ChmodSync(sidecarPath, 755);
+            ChmodSync(sidecarPath, "755");
             console.log("chmod exec finished");
             // if (process.platform != "win32") {
             //   consoleExecSync(`chmod 755 ${sidecarPath}`);
