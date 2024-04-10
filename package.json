@@ -6,7 +6,7 @@
     "dev": "yarn run check && tauri dev",
     "dev:diff": "yarn run check && tauri dev -f verge-dev",
     "build": "yarn run check && cross-env CI=true CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG=true tauri build --verbose",
-    "build-m1": "cross-env CI=true CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG=true tauri build --target aarch64-apple-darwin --verbose",
+    "build-m1": "yarn run check && cross-env CI=true CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG=true tauri build --target aarch64-apple-darwin --verbose",
     "tauri": "tauri",
     "web:dev": "vite",
     "web:build": "tsc && vite build",
